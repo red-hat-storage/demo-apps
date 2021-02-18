@@ -41,7 +41,7 @@ items:
           name: photo-album
           env:
             - name: ENDPOINT_URL
-              value: 'https://s3-openshift-storage.apps.ocp.webwim.com'
+              value: 'https://s3-openshift-storage.apps.{domain}'
             - name: BUCKET_NAME
               valueFrom:
                 configMapKeyRef:
@@ -115,7 +115,7 @@ metadata:
 spec:
   port:
     targetPort: 80-tcp
-  host: photo-album.apps.ocp.webwim.com
+  host: photo-album.apps.{domain}
   to:
     kind: Service
     name: photo-album
