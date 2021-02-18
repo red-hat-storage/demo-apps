@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OCS Photo Album App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lightbox.min.css') }}">
+    <style>
+        div.image {
+          margin: 20px;
+          border: 5px solid #ccc;
+          float: left;
+          width: 250px;
+        }
+        
+        div.image:hover {
+          border: 5px solid #777;
+        }
+        
+        div.image img {
+          width: 100%;
+          height: auto;
+        }
+        
+        div.desc {
+          padding: 15px;
+          text-align: center;
+        }
+        
+        .container{
+            padding-left: 18%;
+            padding-right: 18%;
+        }
+        .from{
+            text-align: center;
+            padding: 41px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 3px solid #ccc;
+        }
+        .btn {
+            margin: 4px 2px;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: .3rem;
+            padding: 6px 22px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn:hover {
+            box-shadow: 2px 2px 4px 0px #ddd;
+        }
+    </style>
+  </head>
+  <body>
+    <div class='container'>
+    <div class='from'>
+      <form method="POST" action="/upload" enctype=multipart/form-data>
+        <label for="file-upload" class="custom-file-upload btn">
+          <i class="fa fa-cloud-upload"></i> Select Photo
+        </label>
+        <input id="file-upload" type="file" name=file />
+        <input class="button btn" type="submit" value=Upload>
+        </form>
+    </div>
+    <div class="gallery">
+    {% for item in contents %}
+      <div class="image">
+        <a class="example-image-link" href="{{ item.url }}" data-lightbox="example-1"><img width="250" height="400" src="/download/{{ item.path }}" /></a>
+      </div>      
+    {% endfor %}
+    </div>      
+    <script src="{{ url_for('static', filename='js/lightbox-plus-jquery.min.js') }}"></script>  
+  </body>
+</html> 
+ 

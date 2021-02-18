@@ -1,0 +1,123 @@
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: "photo-album"
+  namespace: demo
+spec:
+  generateBucketName: "photo-album"
+  storageClassName: openshift-storage.noobaa.io
+---
+apiVersion: v1
+items:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: photo-album
+    name: photo-album
+    namespace: demo
+  spec:
+    replicas: 1
+    selector:
+      app: photo-album
+      deploymentconfig: photo-album
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: photo-album
+          deploymentconfig: photo-album
+      spec:
+        containers:
+        - image: image-registry.openshift-image-registry.svc:5000/default/photo-album
+          name: photo-album
+          env:
+            - name: ENDPOINT_URL
+              value: 'https://s3-openshift-storage.apps.ocp.webwim.com'
+            - name: BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: photo-album
+                  key: BUCKET_NAME
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: photo-album
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: photo-album
+                  key: AWS_SECRET_ACCESS_KEY          
+          ports:
+          - containerPort: 8081
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - photo-album
+        from:
+          kind: ImageStreamTag
+          name: photo-album:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: photo-album
+    name: photo-album
+    namespace: demo
+  spec:
+    ports:
+    - name: 80-tcp
+      port: 80
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      app: photo-album
+      deploymentconfig: photo-album
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  labels:
+    app: photo-album
+  name: photo-album
+  namespace: demo
+spec:
+  port:
+    targetPort: 80-tcp
+  host: photo-album.apps.ocp.webwim.com
+  to:
+    kind: Service
+    name: photo-album
+    weight: 100
+  wildcardPolicy: None
