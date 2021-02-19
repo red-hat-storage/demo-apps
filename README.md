@@ -1,5 +1,5 @@
 # photo-album
 
-replace {domain} in app.yaml with your OCP doamin
+Provide the ocp base domain to ocs.sh to replace {{domain}} in app.yaml.tmpl.
 
-modify path for `oc` in format.sh
+The oc command is found using `which oc`.
