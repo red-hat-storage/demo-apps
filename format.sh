@@ -1,3 +1,14 @@
+# Required Arguments
+export domain=$1
+if [ -z $domain ]; then 
+  if [ -z $OCP_BASEDOMAIN ]; then
+    printf "Please provide OCP base domain:\n\t./ocs ocp.mydomain.tld\nor\n\texport OCP_BASEDOMAIN=ocp.mydomain.tld\n"; 
+    exit 1; 
+  else
+    domain=$OCP_BASEDOMAIN
+  fi
+fi
+
 # Output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -7,7 +18,7 @@ export ERROR='\033[0;31mERROR\033[0m'
 
 function oc {
  args=$@
- cmd="/usr/bin/oc $args"
+ cmd="$(which oc) $args"
  out=$($cmd 2>&1)
 if [ $? -eq 0 ]; then
   if [ "$1" == "process" ]; then
