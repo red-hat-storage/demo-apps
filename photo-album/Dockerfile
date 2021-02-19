@@ -1,4 +1,8 @@
-FROM image-registry.openshift-image-registry.svc:5000/demo/python-app
+FROM registry.redhat.io/ubi8/python-38
+
+ADD ./app/requirements.txt /app/requirements.txt
+WORKDIR /app
+RUN pip install -r requirements.txt
 
 COPY . /
 
