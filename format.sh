@@ -5,7 +5,7 @@ if [ -z $domain ]; then
     printf "Please provide OCP base domain:\n\t./ocs ocp.mydomain.tld\nor\n\texport OCP_BASEDOMAIN=ocp.mydomain.tld\n"; 
     exit 1; 
   else
-    domain=$OCP_BASEDOMAIN
+    export domain=$OCP_BASEDOMAIN
   fi
 fi
 
