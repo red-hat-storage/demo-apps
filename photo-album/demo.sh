@@ -1,11 +1,9 @@
-home=$( cd "$(dirname "$0")" ; pwd -P )
-source $home/../format.sh $@
-oc project demo > /dev/null 2>&1
-oc apply -f $home/../namespace.yaml
+demo_home=$( cd "$(dirname "$([[ $0 != $BASH_SOURCE ]] && echo "$BASH_SOURCE" || echo "$0" )")" ; pwd -P )
+source $demo_home/../format.sh $@
 
 __ "Object Bucket Demo"
 ___ "Cleanup existing environment"
-cd $home; perl -pe "s/\{+domain\}+/$domain/g" app.yaml.tmpl > app.yaml 
+cd $demo_home; perl -pe "s/\{+domain\}+/$domain/g" app.yaml.tmpl > app.yaml 
 oc delete -f app.yaml
 oc delete bc photo-album -n demo
 ___ "Import dependencies and create build config"
