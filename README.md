@@ -1,11 +1,14 @@
-# photo-album
+# OpenShift Container Storage Demos
+## Available demos:
+* Photo Album
 
-Provide the ocp base domain to ocs.sh to replace {{domain}} in app.yaml.tmpl.
+## Run all demos:
+Provide the ocp base domain to demo-all.sh to replace {{domain}} in app.yaml.tmpl.
 
-`./ocs.sh ocp.example.com`
+`./demo-all.sh ocp.example.com`
 
 or
 
-`export OCP_BASEDOMAIN=ocp.example.com; ./ocs.sh`
+`export OCP_BASEDOMAIN=ocp.example.com; ./demo-all.sh`
 
 The oc command is found using `which oc`.
