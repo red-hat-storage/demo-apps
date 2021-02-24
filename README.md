@@ -4,7 +4,7 @@ This script formats the output to focus on the key message, cleans up the enviro
 The oc command for the formatted output is found using `which oc`.
 
 ## Available demos:
-* Photo Album
+* Photo Album - Object Bucket Claim
 
 ## Run all demos:
 Provide the ocp base domain to `demo-all.sh` to replace {{domain}} in `app.yaml.tmpl`.
