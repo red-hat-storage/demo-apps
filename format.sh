@@ -1,13 +1,21 @@
 # Required Arguments
-export domain=$1
-if [ -z $domain ]; then 
-  if [ -z $OCP_BASEDOMAIN ]; then
-    printf "Please provide OCP base domain:\n\t./ocs ocp.mydomain.tld\nor\n\texport OCP_BASEDOMAIN=ocp.mydomain.tld\n"; 
-    exit 1; 
+if [ -z "$domain" ]; then 
+  if [ -n "$1" ]; then
+    export domain=$1;
+  elif [ -n "$OCP_BASEDOMAIN" ]; then
+    export domain=$OCP_BASEDOMAIN;
   else
-    export domain=$OCP_BASEDOMAIN
+    printf "Please provide OCP base domain:\n\t$0 ocp.example.com\nor\n\texport OCP_BASEDOMAIN=ocp.example.com; $0\n"; 
+    exit 1; 
   fi
+else 
+  # Already setup
+  return 0
 fi
+
+home=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
+oc apply -f $home/namespace.yaml
+oc project demo > /dev/null 2>&1
 
 # Output
 RED='\033[0;31m'
