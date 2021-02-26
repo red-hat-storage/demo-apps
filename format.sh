@@ -1,3 +1,10 @@
+# Output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NOC='\033[0m'
+export OK='\033[0;32mOK\033[0m'
+export ERROR='\033[0;31mERROR\033[0m'
+
 # Required Arguments
 if [ -z "$domain" ]; then 
   if [ -n "$1" ]; then
@@ -5,24 +12,19 @@ if [ -z "$domain" ]; then
   elif [ -n "$OCP_BASEDOMAIN" ]; then
     export domain=$OCP_BASEDOMAIN;
   else
-    printf "Please provide OCP base domain:\n\t$0 ocp.example.com\nor\n\texport OCP_BASEDOMAIN=ocp.example.com; $0\n"; 
-    exit 1; 
+    ingress=$($(which oc) get --namespace openshift-ingress-operator ingresscontrollers/default -o jsonpath='{.status.domain}')
+    if [ -n "$ingress" ]; then
+      export domain=$ingress;
+    else
+      printf "[ $ERROR ] Please provide OCP base domain:\n\t$0 ocp.example.com\nor\n\texport OCP_BASEDOMAIN=ocp.example.com; $0\n"; 
+      exit 1; 
+    fi
   fi
 else 
   # Already setup
   return 0
 fi
-
-home=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
-oc apply -f $home/namespace.yaml
-oc project demo > /dev/null 2>&1
-
-# Output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NOC='\033[0m'
-export OK='\033[0;32mOK\033[0m'
-export ERROR='\033[0;31mERROR\033[0m'
+printf "[ $OK    ] Using $domain as our base domain\n"
 
 function oc {
  args=$@
@@ -85,3 +87,8 @@ function ___ {
  fi
  echo;
 }
+
+home=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
+oc apply -f $home/namespace.yaml
+oc project demo > /dev/null 2>&1
+
