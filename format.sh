@@ -9,14 +9,14 @@ export ERROR='\033[0;31mERROR\033[0m'
 if [ -z "$domain" ]; then 
   if [ -n "$1" ]; then
     export domain=$1;
-  elif [ -n "$OCP_BASEDOMAIN" ]; then
-    export domain=$OCP_BASEDOMAIN;
+  elif [ -n "$OCP_APPS_DOMAIN" ]; then
+    export domain=$OCP_APPS_DOMAIN;
   else
     ingress=$($(which oc) get --namespace openshift-ingress-operator ingresscontrollers/default -o jsonpath='{.status.domain}')
     if [ -n "$ingress" ]; then
       export domain=$ingress;
     else
-      printf "[ $ERROR ] Please provide OCP base domain:\n\t$0 ocp.example.com\nor\n\texport OCP_BASEDOMAIN=ocp.example.com; $0\n"; 
+      printf "[ $ERROR ] Please provide OCP apps domain:\n\t$0 apps.ocp.example.com\nor\n\texport OCP_APPS_DOMAIN=apps.ocp.example.com; $0\n"; 
       exit 1; 
     fi
   fi
