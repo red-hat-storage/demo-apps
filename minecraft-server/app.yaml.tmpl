@@ -1,0 +1,90 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minecraft-server-data
+  namespace: demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: minecraft-server
+  namespace: demo
+  labels:
+    app: minecraft-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: minecraft-server
+    deploymentconfig: minecraft-server
+  template:
+    metadata:
+      labels:
+        app: minecraft-server
+        deploymentconfig: minecraft-server
+    spec:
+      volumes:
+        - name: "minecraft-server-data"
+          persistentVolumeClaim:
+            claimName: "minecraft-server-data"
+      containers:
+        - name: minecraft-server
+          image: itzg/minecraft-server
+          ports:
+            - containerPort: 25565
+              protocol: TCP
+          env:
+            - name: "EULA"
+              value: "TRUE"
+          volumeMounts:
+            - mountPath: /data
+              name: minecraft-server-data
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: minecraft-server
+  namespace: demo
+spec:
+  host: minecraft.{{domain}}
+  to:
+    kind: Service
+    name: minecraft-server
+    weight: 100
+  port:
+    targetPort: 25565
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: minecraft-server
+  namespace: demo
+  labels:
+    app: minecraft-server
+spec:
+  ports:
+    - protocol: TCP
+      port: 25565
+      targetPort: 25565
+      nodePort: 30630
+  selector:
+    app: minecraft-server
+    deploymentconfig: minecraft-server
+  type: NodePort
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
