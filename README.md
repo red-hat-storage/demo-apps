@@ -6,13 +6,16 @@ By default the demo script will query openshift for the base domain.
 
 ## Available demos:
 * [PiHole DNS Filter - CephFS with retention](pihole/README.md)
-* [MineCraft Server - Block Storage](minecraft/README.md)
+* [MineCraft Server - Block Storage](minecraft-server/README.md)
 * [Photo Album - Object Bucket Claim](photo-album/README.md)
 
 ## Run all demos:
 `./demo-all.sh`
 
 ## Run a single demo:
+
 `./pihole/demo.sh`
-`./minecraft/demo.sh`
+
+`./minecraft-server/demo.sh`
+
 `./photo-album/demo.sh`
