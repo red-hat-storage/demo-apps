@@ -11,4 +11,5 @@ ___ "PV is Released"
 out=$($(which oc) patch pv $pvname --type json -p $'- op: remove\n  path: /spec/claimRef')
 ___ "PV is Available"
 oc create -f $demo_home/app.yaml
+cd -
 echo;
