@@ -87,6 +87,8 @@ spec:
               value: "127.0.0.1"
             - name: "WEBPASSWORD"
               value: "pihole"
+            - name: "DNSMASQ_USER"
+              value: "root"
           volumeMounts:
             - mountPath: /etc/pihole
               name: pihole-data
