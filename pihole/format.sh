@@ -4,6 +4,9 @@ GREEN='\033[0;32m'
 NOC='\033[0m'
 export OK='\033[0;32mOK\033[0m'
 export ERROR='\033[0;31mERROR\033[0m'
+export ocli=$(whereis -b oc | cut -d' ' -f 2)
+oc create namespace demo > /dev/null 2>&1
+oc project demo > /dev/null 2>&1
 
 # Required Arguments
 if [ -z "$domain" ]; then 
@@ -12,7 +15,7 @@ if [ -z "$domain" ]; then
   elif [ -n "$OCP_APPS_DOMAIN" ]; then
     export domain=$OCP_APPS_DOMAIN;
   else
-    ingress=$($(which oc) get --namespace openshift-ingress-operator ingresscontrollers/default -o jsonpath='{.status.domain}')
+    ingress=$($ocli get --namespace openshift-ingress-operator ingresscontrollers/default -o jsonpath='{.status.domain}')
     if [ -n "$ingress" ]; then
       export domain=$ingress;
     else
@@ -28,7 +31,7 @@ printf "[ $OK    ] Using $domain as our base domain\n"
 
 function oc {
  args=$@
- cmd="$(which oc) $args"
+ cmd="$ocli $args"
  out=$($cmd 2>&1)
 if [ $? -eq 0 ]; then
   if [ "$1" == "process" ]; then
@@ -87,8 +90,3 @@ function ___ {
  fi
  echo;
 }
-
-home=$( cd "$(dirname "$BASH_SOURCE")" ; pwd -P )
-oc create namespace demo > /dev/null 2>&1
-oc project demo > /dev/null 2>&1
-
